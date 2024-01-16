@@ -2,5 +2,6 @@ version: '3'
 services:
   payment-service:
     image: payment-service
-    build: .
+    ports:
+      - "9090:9090"
  
