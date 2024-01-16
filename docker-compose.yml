@@ -4,4 +4,9 @@ services:
     image: payment-service
     ports:
       - "9090:9090"
- 
+    networks:
+      - system-test_dtupay-network
+
+networks:
+  system-test_dtupay-network:
+    external: true
