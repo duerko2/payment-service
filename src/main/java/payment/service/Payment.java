@@ -12,7 +12,7 @@ public class Payment {
 
     public Payment() {
     }
-
+// Marcus sutter røv
     public String getPaymentId() {
         return paymentId;
     }
