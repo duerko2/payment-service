@@ -1,6 +1,6 @@
 package payment.service.adapter.rest;
 
-import payment.service.PaymentService;
+import payment.service.service.PaymentService;
 import messaging.MessageQueue;
 import messaging.implementations.RabbitMqQueue;
 

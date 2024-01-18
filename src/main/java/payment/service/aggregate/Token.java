@@ -1,6 +1,8 @@
-package payment.service;
+package payment.service.aggregate;
+import java.io.Serializable;
 
-public class Token {
+public class Token implements Serializable {
+    private static final long serialVersionUID = 7873796962475638382L;
     String rfid;
     public Token() {
     }

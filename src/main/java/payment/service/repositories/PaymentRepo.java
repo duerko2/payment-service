@@ -1,4 +1,6 @@
-package payment.service;
+package payment.service.repositories;
+
+import payment.service.aggregate.Payment;
 
 import java.util.ArrayList;
 import java.util.HashMap;

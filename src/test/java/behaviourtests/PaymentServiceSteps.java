@@ -1,12 +1,11 @@
 package behaviourtests;
 
-import io.cucumber.java.After;
 import io.cucumber.java.en.*;
 import messaging.Event;
 import messaging.MessageQueue;
-import payment.service.Payment;
-import payment.service.PaymentService;
-import payment.service.Token;
+import payment.service.aggregate.Payment;
+import payment.service.service.PaymentService;
+import payment.service.aggregate.Token;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;

@@ -1,11 +1,10 @@
 package payment.service.adapter.rest;
 
-import javax.transaction.Status;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
-import payment.service.Payment;
-import payment.service.PaymentService;
+import payment.service.aggregate.Payment;
+import payment.service.service.PaymentService;
 
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.TimeoutException;

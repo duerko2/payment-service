@@ -1,7 +1,9 @@
-package payment.service;
+package payment.service.service;
 
 import messaging.Event;
 import messaging.MessageQueue;
+import payment.service.aggregate.Payment;
+import payment.service.repositories.PaymentRepo;
 
 import java.util.List;
 import java.util.UUID;

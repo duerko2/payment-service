@@ -134,6 +134,24 @@
       <artifactId>messaging-utilities</artifactId>
       <version>2ff374cc49</version>
     </dependency>
+      <dependency>
+          <groupId>org.projectlombok</groupId>
+          <artifactId>lombok</artifactId>
+          <version>1.18.30</version>
+          <scope>compile</scope>
+      </dependency>
+    <dependency>
+      <groupId>com.github.NikolajBeier</groupId>
+      <artifactId>message-utilities</artifactId>
+      <version>1803d626e0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jmolecules</groupId>
+      <artifactId>jmolecules-ddd</artifactId>
+      <version>1.4.0</version>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
