@@ -20,6 +20,8 @@ public class PaymentService {
 	}
 
 	public CompletableFuture<Payment> registerPayment(Payment payment) {
+		System.out.printf("Token before send"+payment.getToken().toString());
+
 		CompletableFuture<Payment> completedPayment = new CompletableFuture<>();
 
 		// Generate payment id
