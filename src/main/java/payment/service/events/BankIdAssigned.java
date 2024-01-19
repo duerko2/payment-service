@@ -9,7 +9,7 @@ import payment.service.aggregate.PaymentId;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class BankIdAssigned extends Event {
-    private static final long serialVersionUID = -1;
+    private static final long serialVersionUID = -7167454084952715059L;
 
     private String merchantBankId;
 

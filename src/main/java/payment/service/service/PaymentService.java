@@ -68,7 +68,7 @@ public class PaymentService {
 
 	//TODO: maybe not good enough, could be concurrency problems
 
-	public void handleGetPaymentsRequest(Event event) {
+	public void handleGetPaymentsRequest(GetPaymentsRequest event) {
 		// get payments from repo
 	 	GetPaymentsRequest payments = new GetPaymentsRequest(paymentRepo.getAllPayments());
 		queue.publish(payments);

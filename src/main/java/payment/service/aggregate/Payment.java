@@ -42,10 +42,10 @@ import java.util.stream.Stream;
 @Setter
 public class Payment {
 
-    String merchantId;
+    AccountId merchantId;
     int amount;
     Token token;
-    String customerId;
+    AccountId customerId;
     String merchantBankId;
     String customerBankId;
     PaymentId paymentId;

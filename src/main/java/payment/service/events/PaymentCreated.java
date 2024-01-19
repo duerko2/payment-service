@@ -29,6 +29,6 @@ public class PaymentCreated extends Event{
 
     private PaymentId paymentId;
 
-    private String merchantId;
+    AccountId merchantId;
 
 }

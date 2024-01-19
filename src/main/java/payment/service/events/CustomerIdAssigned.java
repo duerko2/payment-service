@@ -3,6 +3,7 @@ import lombok.EqualsAndHashCode;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
+import payment.service.aggregate.AccountId;
 import payment.service.aggregate.PaymentId;
 import payment.service.aggregate.Token;
 
@@ -15,7 +16,7 @@ public class CustomerIdAssigned extends Event{
     private PaymentId paymentId;
 
 
-    private String customerId;
+    private AccountId customerId;
 
     private Token token;
 

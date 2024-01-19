@@ -11,7 +11,7 @@ import lombok.Value;
 @ValueObject
 @Value
 public class PaymentId implements Serializable{
-    private static final long serialVersionUID=-1;
+    private static final long serialVersionUID= -1258555970416660835L;
 
     private UUID uuid;
 

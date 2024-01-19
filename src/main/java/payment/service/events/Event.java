@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 public abstract class Event implements Message, Serializable{
 
-    private static final long serialVersionUID = -1 ;
+    private static final long serialVersionUID = -6456974401496967432L;
 
     private static long versionCount = 1;
 

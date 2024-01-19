@@ -51,10 +51,7 @@ public class PaymentServiceSteps {
     @When("the payment is requested")
     public void the_payment_is_requested() {
         // Write code here that turns the phrase above into concrete actions
-        new Thread(() -> {
-            CompletableFuture<Payment> result;
-            registeredPayment = service.registerPayment(payment);
-        }).start();
+        registeredPayment = service.registerPayment(payment.getAmount(),payment.getToken(),payment.getMerchantId());
     }
 
     @Then("the {string} event is sent")
@@ -67,6 +64,7 @@ public class PaymentServiceSteps {
     @And("the {string} event is sent with a merchantId and customerId and a paymentId")
     public void theEventIsSentWithAMerchantIdAndCustomerIdAndAPaymentId(String arg0) {
         // copy of the payment sent
+        /*
         Payment expectedPayment = new Payment();
         expectedPayment.setAmount(payment.getAmount());
         expectedPayment.setMerchantId(payment.getMerchantId());
@@ -75,8 +73,10 @@ public class PaymentServiceSteps {
 
 
         // Mocks the downstream services
-        expectedPayment.setCustomerId("customerId");
+        expectedPayment.setCustomerId(new AccountId(UUID.randomUUID()));
         expectedPayment.setPaymentId(payment.getPaymentId());
+
+         */
 
         PaymentSuccessful event = new PaymentSuccessful(registeredPayment.getPaymentId());
         service.handleBankTransferCompleted(event);
