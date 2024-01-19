@@ -58,7 +58,6 @@ public class PaymentService {
 	public void handleGetPaymentsRequest(Event event) {
 		// get payments from repo
 		List<Payment> paymentsList = paymentRepo.getAllPayments();
-
 		Event responseEvent = new Event("PaymentsList", new Object[]{paymentsList});
 		queue.publish(responseEvent);
 	}
