@@ -6,7 +6,10 @@ import messaging.MessageQueue;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-
+/**
+ * @Author: Alex Batten
+ * Mob programming, all members
+ */
 public class PaymentService {
 
 	private MessageQueue queue;
@@ -43,18 +46,14 @@ public class PaymentService {
 
 	public void handleBankTransferCompleted(Event event) {
 		var bankTransferCompletedPayment = event.getArgument(0, Payment.class);
-		System.out.println("Looking for payment belonging to event with id: " + bankTransferCompletedPayment.getPaymentId()+" and amount: "+bankTransferCompletedPayment.getAmount()+"and merchantId: "+bankTransferCompletedPayment.getMerchantId());
 		CompletableFuture<Payment> p = paymentRepo.getFuturePayment(bankTransferCompletedPayment.getPaymentId());
 
 		if(p == null) {
-			System.out.println("Payment not found");
 			return;
 		}
 
 		p.complete(bankTransferCompletedPayment);
 	}
-
-	//TODO: maybe not good enough, could be concurrency problems
 
 	public void handleGetPaymentsRequest(Event event) {
 		// get payments from repo

@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-
+/**
+ * @Author: Alex Batten
+ * Mob programming, all members
+ */
 public class PaymentRepo {
     List<Payment> payments = new ArrayList<>();
     Map<String, CompletableFuture<Payment>> paymentIdToPaymentMap = new HashMap<>();
