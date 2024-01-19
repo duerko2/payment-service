@@ -3,7 +3,6 @@ package payment.service;
 import messaging.Event;
 import messaging.MessageQueue;
 
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -16,7 +15,6 @@ public class PaymentService {
 	public PaymentService(MessageQueue queue) {
 		this.queue = queue;
 		queue.addHandler("PaymentSuccessful", this::handleBankTransferCompleted);
-		queue.addHandler("GetPaymentsRequest", this::handleGetPaymentsRequest);
 	}
 
 	public CompletableFuture<Payment> registerPayment(Payment payment) {
@@ -50,16 +48,6 @@ public class PaymentService {
 		}
 
 		p.complete(bankTransferCompletedPayment);
-	}
-
-	//TODO: maybe not good enough, could be concurrency problems
-
-	public void handleGetPaymentsRequest(Event event) {
-		// get payments from repo
-		List<Payment> paymentsList = paymentRepo.getAllPayments();
-
-		Event responseEvent = new Event("PaymentsList", new Object[]{paymentsList});
-		queue.publish(responseEvent);
 	}
 
 }
