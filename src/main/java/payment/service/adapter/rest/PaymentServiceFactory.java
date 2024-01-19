@@ -1,5 +1,6 @@
 package payment.service.adapter.rest;
 
+import messaging.implementations.MessageQueueAsync;
 import payment.service.repositories.PaymentReadRepo;
 import payment.service.repositories.PaymentRepo;
 import payment.service.service.PaymentService;
@@ -13,8 +14,7 @@ public class PaymentServiceFactory {
 
 	static PaymentRepo paymentRepo = null;
 
-	private final MessageQueue mq = new RabbitMqQueue("rabbitMq");
-
+	private final MessageQueue mq = new RabbitMqQueue("rabbitMq","event");
 
 	public synchronized PaymentService getService(){
 		if (service != null) {

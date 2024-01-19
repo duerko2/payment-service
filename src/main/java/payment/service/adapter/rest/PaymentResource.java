@@ -22,6 +22,10 @@ public class PaymentResource {
 	@Consumes("application/json")
 	@Produces("application/json")
 	public Response registerPayment(PaymentDTO payment) {
+		System.out.println("payment = " + payment);
+		System.out.println("payment.getAmount() = " + payment.getAmount());
+		System.out.println("payment.getToken() = " + payment.getToken());
+		System.out.println("payment.getMerchantId() = " + payment.getMerchantId());
 
 		try {
 			var p = service.registerPayment(payment.getAmount(),new Token(payment.getToken()),new AccountId(UUID.fromString(payment.getMerchantId())));
