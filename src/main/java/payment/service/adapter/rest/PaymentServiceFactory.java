@@ -3,7 +3,11 @@ package payment.service.adapter.rest;
 import payment.service.PaymentService;
 import messaging.MessageQueue;
 import messaging.implementations.RabbitMqQueue;
-
+/**
+ * @Author: Marcus Jacobsen
+ * Pair programming with Alexander Elsing
+ * Based on code from Hubert Baumeister
+ */
 public class PaymentServiceFactory {
 	static PaymentService service = null;
 

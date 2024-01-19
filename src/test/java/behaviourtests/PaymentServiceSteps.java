@@ -13,7 +13,10 @@ import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-
+/**
+ * @Author: Marcus Jacobsen
+ * Mob programming, all members
+ */
 public class PaymentServiceSteps {
     Payment payment;
     private CompletableFuture<Event> publishedEvent = new CompletableFuture<>();

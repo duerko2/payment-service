@@ -1,5 +1,8 @@
 package payment.service;
-
+/**
+ * @Author: Andreas Aagaard
+ * Mob programming, all members
+ */
 public class Payment {
 
     String merchantId;

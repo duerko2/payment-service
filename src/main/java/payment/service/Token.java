@@ -1,5 +1,8 @@
 package payment.service;
-
+/**
+ * @Author: Nikolaj Beier
+ * Mob programming, all members
+ */
 public class Token {
     String rfid;
     public Token() {

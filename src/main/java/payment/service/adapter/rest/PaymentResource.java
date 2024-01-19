@@ -9,7 +9,11 @@ import payment.service.PaymentService;
 
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.TimeoutException;
-
+/**
+ * @Author: Marcus Jacobsen
+ * Pair programming with Alexander Elsing
+ * Based on code from Hubert Baumeister
+ */
 @Path("/payments")
 public class PaymentResource {
 
