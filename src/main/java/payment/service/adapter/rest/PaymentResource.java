@@ -20,16 +20,10 @@ public class PaymentResource {
 	@Produces("application/json")
 	public Response registerPayment(Payment payment) {
 		try {
-			var p = service.registerPayment(payment);
-			return Response.ok(p.join()).build();
-		} catch(CompletionException e) {
-			if(e.getCause() instanceof TimeoutException) {
-				return Response.status(408).build();
-			}
-			return Response.status(500).build();
+			var p = service.registerPayment(payment.getAmount(),new Token(payment.getToken()),new AccountId(UUID.fromString(payment.getMerchantId())));
+			return Response.ok(p).build();
 		} catch (Exception e) {
 			return Response.status(409).build();
 		}
 	}
-
 }

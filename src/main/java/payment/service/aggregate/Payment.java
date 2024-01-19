@@ -48,7 +48,7 @@ public class Payment {
     String customerId;
     String merchantBankId;
     String customerBankId;
-    String paymentId;
+    PaymentId paymentId;
 
 
     private List<Event> appliedEvents = new ArrayList<Event>();
@@ -56,14 +56,15 @@ public class Payment {
     private Map<Class<? extends Message>, Consumer<Message>> handlers = new HashMap<>();
 
 
+
+
     //TODO consider if payment needs every variable in payment instead of the current once.
-    public static Payment createPayment(String merchantId, int amount, Token token, String merchantBankId, String paymentId) {
-        var paymentID = new PaymentId(UUID.randomUUID());
-        PaymentCreated event = new PaymentCreated(amount, token, merchantBankId, paymentId);
-        var payment = new Payment();
-        payment.paymentId = paymentID.getUuid().toString();
-        payment.appliedEvents.add(event);
-        return payment;
+    public static Payment createPayment(int amount, Token token, AccountId merchantId, PaymentId paymentId) {
+        PaymentCreated event = new PaymentCreated(amount, token, paymentId, merchantId);
+        Payment p =new Payment();
+        p.setPaymentId(paymentId);
+        p.appliedEvents.add(event);
+        return p;
     }
 
     public static Payment createNewPayment(Stream<Event> events) {
@@ -82,6 +83,13 @@ public class Payment {
         handlers.put(PaymentCreated.class, e -> apply((PaymentCreated) e));
         handlers.put(BankIdAssigned.class, e -> apply((BankIdAssigned) e));
         handlers.put(CustomerIdAssigned.class, e -> apply((CustomerIdAssigned) e));
+    }
+    public Payment(PaymentId paymentId, int amount, AccountId merchantId, Token token) {
+        this.paymentId = paymentId;
+        this.amount = amount;
+        this.token = token;
+        this.merchantId = merchantId;
+        registerEventHandlers();
     }
 
 
@@ -102,17 +110,6 @@ public class Payment {
     }
 
 
-    public void UpdatePaymentTokens(Set<Token> tokens) {
-        List<Event> events = new ArrayList<>();
-
-        for (Token token : tokens) {
-            events.add(new PaymentTokenAdded(paymentId, token));
-        }
-        appliedEvents.addAll(events);
-
-    }
-
-
     private void apply(BankIdAssigned event) {
         customerBankId = event.getCustomerBankId();
         merchantBankId = event.getCustomerBankId();
@@ -125,6 +122,10 @@ public class Payment {
 
     private void missingHandler(Message e) {
         throw new RuntimeException("Missing event handler for " + e.getClass().getSimpleName());
+    }
+
+    public void clearAppliedEvents() {
+        appliedEvents.clear();
     }
 
     public void applyEvents(Stream<Event> events) {

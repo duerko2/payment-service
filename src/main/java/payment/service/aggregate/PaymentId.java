@@ -3,6 +3,7 @@ package payment.service.aggregate;
 import java.io.Serializable;
 import java.util.UUID;
 
+import lombok.Setter;
 import org.jmolecules.ddd.annotation.ValueObject;
 
 import lombok.Value;

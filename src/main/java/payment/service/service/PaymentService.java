@@ -1,8 +1,12 @@
 package payment.service.service;
 
-import messaging.Event;
 import messaging.MessageQueue;
+import payment.service.aggregate.AccountId;
 import payment.service.aggregate.Payment;
+import payment.service.aggregate.PaymentId;
+import payment.service.aggregate.Token;
+import payment.service.events.*;
+import payment.service.repositories.PaymentReadRepo;
 import payment.service.repositories.PaymentRepo;
 
 import java.util.List;
@@ -12,56 +16,69 @@ import java.util.concurrent.CompletableFuture;
 public class PaymentService {
 
 	private MessageQueue queue;
-	PaymentRepo paymentRepo = new PaymentRepo();
+
+	PaymentRepo paymentRepo;
+	PaymentReadRepo paymentReadRepo;
 
 
-	public PaymentService(MessageQueue queue) {
+
+	public PaymentService(MessageQueue queue, PaymentRepo paymentRepo, PaymentReadRepo paymentReadRepo) {
 		this.queue = queue;
-		queue.addHandler("PaymentSuccessful", this::handleBankTransferCompleted);
-		queue.addHandler("GetPaymentsRequest", this::handleGetPaymentsRequest);
+		this.paymentRepo = paymentRepo;
+		this.paymentReadRepo = paymentReadRepo;
+
+		queue.addHandler(PaymentSuccessful.class, e -> handleBankTransferCompleted((PaymentSuccessful) e));
+		queue.addHandler(GetPaymentsRequest.class, e -> handleGetPaymentsRequest((GetPaymentsRequest) e));
+		//queue.addHandler(PaymentRequestSent.class, e -> handlePaymentRequest((PaymentRequestSent) e));
 	}
 
-	public CompletableFuture<Payment> registerPayment(Payment payment) {
-		CompletableFuture<Payment> completedPayment = new CompletableFuture<>();
 
+
+	public Payment registerPayment(int amount, Token token, AccountId merchantId) {
 		// Generate payment id
-		String id = UUID.randomUUID().toString();
-		payment.setPaymentId(id);
+		PaymentId id = new PaymentId(UUID.randomUUID());
 
+		// Create Payment
+		Payment registeredPayment = Payment.createPayment(amount, token,merchantId, id);
 		// Add payment request to repo
-		paymentRepo.addFuturePayment(id, completedPayment);
+		//paymentRepo.addFuturePayment(id,registeredPayment);
+		paymentRepo.save(registeredPayment);
 
-		// Event to token service
-		Event tokenEvent = new Event("PaymentRequestSent", new Object[] {payment});
+		PaymentRequested paymentRequested = new PaymentRequested(registeredPayment.getAmount(), registeredPayment.getToken(), registeredPayment.getPaymentId(), registeredPayment.getMerchantId());
+		queue.publish(paymentRequested);
 
-		queue.publish(tokenEvent);
-
-		// Return the completable future to the resource
-		return completedPayment.orTimeout(10, java.util.concurrent.TimeUnit.SECONDS);
+		// Return the payment to the resource
+		return registeredPayment;
 	}
 
 
-	public void handleBankTransferCompleted(Event event) {
-		var bankTransferCompletedPayment = event.getArgument(0, Payment.class);
-		System.out.println("Looking for payment belonging to event with id: " + bankTransferCompletedPayment.getPaymentId()+" and amount: "+bankTransferCompletedPayment.getAmount()+"and merchantId: "+bankTransferCompletedPayment.getMerchantId());
-		CompletableFuture<Payment> p = paymentRepo.getFuturePayment(bankTransferCompletedPayment.getPaymentId());
+	public void handleBankTransferCompleted(PaymentSuccessful event) {
+		PaymentSuccessful bankTransferCompletedPayment = event;
+		System.out.println("Looking for payment belonging to event with id: " + bankTransferCompletedPayment.getPaymentId());
+		Payment p = paymentRepo.getPayment(bankTransferCompletedPayment.getPaymentId());
 
 		if(p == null) {
 			System.out.println("Payment not found");
 			return;
 		}
 
-		p.complete(bankTransferCompletedPayment);
+
+		// TODO: Match with completablefuture ?
 	}
 
 	//TODO: maybe not good enough, could be concurrency problems
 
 	public void handleGetPaymentsRequest(Event event) {
 		// get payments from repo
-		List<Payment> paymentsList = paymentRepo.getAllPayments();
+	 	GetPaymentsRequest payments = new GetPaymentsRequest(paymentRepo.getAllPayments());
+		queue.publish(payments);
+	}
 
-		Event responseEvent = new Event("PaymentsList", new Object[]{paymentsList});
-		queue.publish(responseEvent);
+	private void handlePaymentRequest(PaymentRequestSent e) {
+
+
+		System.out.println("ppooop");
+
 	}
 
 }

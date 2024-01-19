@@ -1,45 +1,51 @@
 package behaviourtests;
 
+import io.cucumber.java.Before;
 import io.cucumber.java.en.*;
-import messaging.Event;
+import io.quarkus.test.Mock;
+import messaging.Message;
 import messaging.MessageQueue;
+import payment.service.aggregate.AccountId;
 import payment.service.aggregate.Payment;
+import payment.service.aggregate.PaymentId;
+import payment.service.events.*;
+import payment.service.repositories.PaymentReadRepo;
+import payment.service.repositories.PaymentRepo;
 import payment.service.service.PaymentService;
 import payment.service.aggregate.Token;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class PaymentServiceSteps {
     Payment payment;
-    private CompletableFuture<Event> publishedEvent = new CompletableFuture<>();
+    private List<Message> publishedEvent = new ArrayList<>();
 
 
-    private MessageQueue q = new MessageQueue() {
+    private MessageQueue q = mock(MessageQueue.class);
 
-        @Override
-        public void publish(Event event) {
-            publishedEvent.complete(event);
-        }
+    private Payment registeredPayment;
 
-        @Override
-        public void addHandler(String eventType, Consumer<Event> handler) {
-        }
+    PaymentRepo accountRepo = new PaymentRepo(q);
+    PaymentReadRepo accountReadRepo = new PaymentReadRepo(q);
+    private PaymentService service = new PaymentService(q,accountRepo,accountReadRepo);
 
-    };
-    private PaymentService service = new PaymentService(q);
-    private CompletableFuture<Payment> registeredPayment = new CompletableFuture<>();
+
 
     @Given("there is a payment with {int} token merchantId {string} and amount {int}")
     public void there_is_a_payment_with_token_merchant_id_and_amount(Integer int1, String string, Integer int2) {
         // Write code here that turns the phrase above into concrete actions
         payment = new Payment();
         payment.setAmount(int2);
-        payment.setMerchantId(string);
-        payment.setToken(new Token("123"));
+        payment.setMerchantId(new AccountId(UUID.randomUUID()));
+        payment.setToken(new Token(int1.toString()));
     }
 
     @When("the payment is requested")
@@ -54,8 +60,8 @@ public class PaymentServiceSteps {
     @Then("the {string} event is sent")
     public void the_event_is_sent(String string) {
         // Write code here that turns the phrase above into concrete actions
-        Event event = new Event(string, new Object[]{payment});
-        assertEquals(event, publishedEvent.join());
+        PaymentRequested event = new PaymentRequested(payment.getAmount(), payment.getToken(),registeredPayment.getPaymentId(), payment.getMerchantId());
+        verify(q).publish(event);
     }
 
     @And("the {string} event is sent with a merchantId and customerId and a paymentId")
@@ -65,20 +71,21 @@ public class PaymentServiceSteps {
         expectedPayment.setAmount(payment.getAmount());
         expectedPayment.setMerchantId(payment.getMerchantId());
         expectedPayment.setToken(payment.getToken());
+        expectedPayment.setPaymentId(payment.getPaymentId());
 
 
         // Mocks the downstream services
         expectedPayment.setCustomerId("customerId");
         expectedPayment.setPaymentId(payment.getPaymentId());
 
-        Event event = new Event(arg0, new Object[]{expectedPayment});
+        PaymentSuccessful event = new PaymentSuccessful(registeredPayment.getPaymentId());
         service.handleBankTransferCompleted(event);
     }
 
     @Then("the payment is stored in the successful payments ledger")
     public void thePaymentIsStoredInTheSuccessfulPaymentsLedger() {
         // Write code here that turns the phrase above into concrete actions
-        Payment result = registeredPayment.join();
+        Payment result = registeredPayment;
         assertNotNull(result.getPaymentId());
     }
 }

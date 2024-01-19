@@ -1,8 +1,9 @@
-
 package payment.service.repositories;
+
 import payment.service.aggregate.PaymentId;
 import payment.service.events.*;
 
+import lombok.NonNull;
 import messaging.MessageQueue;
 
 import java.util.ArrayList;
@@ -13,33 +14,28 @@ import java.util.stream.Stream;
 
 public class PaymentEventStore {
 
-    /*
-    private Map<AccountId, List<Event>> store = new ConcurrentHashMap<>();
+    private Map<PaymentId, List<Event>> store = new ConcurrentHashMap<>();
 
     private MessageQueue eventBus;
 
-    public AccountEventStore(MessageQueue eventBus) {
-        this.eventBus = eventBus;
-    }
+    public PaymentEventStore(MessageQueue eventBus) { this.eventBus = eventBus; }
 
-    public void addEvent(AccountId id, Event event) {
-        if (!store.containsKey(event.getAccountId())) {
-            store.put(event.getAccountId(), new ArrayList<Event>());
+    public void addEvent(PaymentId id, Event event) {
+        if (!store.containsKey(event.getPaymentId())) {
+            store.put(event.getPaymentId(), new ArrayList<Event>());
         }
-        store.get(event.getAccountId()).add(event);
+        store.get(event.getPaymentId()).add(event);
         eventBus.publish(event);
     }
 
-    public Stream<Event> getEventsFor(AccountId id) {
+    public Stream<Event> getEventsFor(PaymentId id) {
         if (!store.containsKey(id)) {
             store.put(id, new ArrayList<Event>());
         }
         return store.get(id).stream();
     }
 
-    public void addEvents(@NonNull AccountId accountId, List<Event> appliedEvents) {
-        appliedEvents.stream().forEach(e -> addEvent(accountId, e));
+    public void addEvents(@NonNull PaymentId paymentId, List<Event> appliedEvents) {
+        appliedEvents.stream().forEach(e -> addEvent(paymentId, e));
     }
-
-     */
 }

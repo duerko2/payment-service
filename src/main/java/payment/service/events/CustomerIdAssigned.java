@@ -1,6 +1,4 @@
 package payment.service.events;
-import payment.service.aggregate.CustomerId;
-import javax.validation.Valid;
 import lombok.EqualsAndHashCode;
 import lombok.AllArgsConstructor;
 import lombok.Value;
@@ -12,8 +10,9 @@ import payment.service.aggregate.Token;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class CustomerIdAssigned extends Event{
+    private static final long serialVersionUID = -6560261477877206113L;
 
-    PaymentId paymentId;
+    private PaymentId paymentId;
 
 
     private String customerId;

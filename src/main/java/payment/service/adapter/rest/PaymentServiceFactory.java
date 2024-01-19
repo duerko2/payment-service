@@ -1,11 +1,17 @@
 package payment.service.adapter.rest;
 
+import payment.service.repositories.PaymentReadRepo;
+import payment.service.repositories.PaymentRepo;
 import payment.service.service.PaymentService;
 import messaging.MessageQueue;
 import messaging.implementations.RabbitMqQueue;
 
 public class PaymentServiceFactory {
 	static PaymentService service = null;
+
+	static PaymentReadRepo paymentReadRepo = null;
+
+	static PaymentRepo paymentRepo = null;
 
 	private final MessageQueue mq = new RabbitMqQueue("rabbitMq");
 
@@ -14,7 +20,13 @@ public class PaymentServiceFactory {
 		if (service != null) {
 			return service;
 		}
-		service = new PaymentService(mq);
+		if(paymentReadRepo == null) {
+			paymentReadRepo = new PaymentReadRepo(mq);
+		}
+		if(paymentRepo == null) {
+			paymentRepo = new PaymentRepo(mq);
+		}
+		service = new PaymentService(mq, paymentRepo, paymentReadRepo);
 		return service;
 	}
 

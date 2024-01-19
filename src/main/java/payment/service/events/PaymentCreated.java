@@ -1,5 +1,7 @@
 package payment.service.events;
 
+import payment.service.aggregate.AccountId;
+import payment.service.aggregate.PaymentId;
 import payment.service.aggregate.Token;
 
 import lombok.AllArgsConstructor;
@@ -13,7 +15,7 @@ import lombok.Value;
 @EqualsAndHashCode(callSuper = false)
 public class PaymentCreated extends Event{
 
-    private static final long serialVersionUID = -1;
+    private static final long serialVersionUID = 6666431182531156448L;
 
     private int amount;
 
@@ -25,7 +27,7 @@ public class PaymentCreated extends Event{
 
    // private String customerBankId;
 
-    private String paymentId;
+    private PaymentId paymentId;
 
     private String merchantId;
 
